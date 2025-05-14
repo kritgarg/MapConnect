@@ -1,63 +1,76 @@
-import { useState } from 'react';
-import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
+import { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Box, Paper, Typography } from '@mui/material';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+// Fix for default marker icons in Leaflet with React
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
+// Custom marker icon with profile photo
+const createCustomIcon = (photoUrl) => {
+  return L.divIcon({
+    html: `<div style="
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      background-color: white;
+    ">
+      <img src="${photoUrl}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>`,
+    className: 'custom-marker',
+    iconSize: [46, 46],
+    iconAnchor: [23, 46],
+    popupAnchor: [0, -46],
+  });
+};
 
 function MapView({ location, coordinates, name, photo }) {
-  const [showPopup, setShowPopup] = useState(false);
+  const mapRef = useRef(null);
+  const [position, setPosition] = useState([coordinates[1], coordinates[0]]);
+  const customIcon = createCustomIcon(photo);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.setView([coordinates[1], coordinates[0]], 12);
+    }
+  }, [coordinates]);
 
   return (
-    <Paper sx={{ height: 300, overflow: 'hidden', position: 'relative' }}>
-      <Map
-        initialViewState={{
-          longitude: coordinates[0],
-          latitude: coordinates[1],
-          zoom: 12
-        }}
+    <Paper 
+      elevation={2} 
+      sx={{ 
+        height: 300, 
+        overflow: 'hidden', 
+        position: 'relative',
+        borderRadius: 2,
+      }}
+    >
+      <MapContainer
+        center={position}
+        zoom={12}
         style={{ width: '100%', height: '100%' }}
-        mapStyle="mapbox://styles/mapbox/light-v11"
-        mapboxAccessToken={MAPBOX_TOKEN}
+        ref={mapRef}
+        scrollWheelZoom={false}
       >
-        <NavigationControl position="top-right" />
-        
-        <Marker
-          longitude={coordinates[0]}
-          latitude={coordinates[1]}
-          anchor="bottom"
-          onClick={e => {
-            e.originalEvent.stopPropagation();
-            setShowPopup(true);
-          }}
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <Marker 
+          position={position}
+          icon={customIcon}
         >
-          <Box
-            component="img"
-            src={photo}
-            alt={name}
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              border: '3px solid #fff',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s',
-              '&:hover': {
-                transform: 'scale(1.1)',
-              }
-            }}
-          />
-        </Marker>
-
-        {showPopup && (
-          <Popup
-            longitude={coordinates[0]}
-            latitude={coordinates[1]}
-            anchor="top"
-            onClose={() => setShowPopup(false)}
-            closeOnClick={false}
-          >
+          <Popup>
             <Box sx={{ p: 1 }}>
               <Typography variant="subtitle2" fontWeight="bold">
                 {name}
@@ -67,8 +80,8 @@ function MapView({ location, coordinates, name, photo }) {
               </Typography>
             </Box>
           </Popup>
-        )}
-      </Map>
+        </Marker>
+      </MapContainer>
     </Paper>
   );
 }
