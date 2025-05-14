@@ -10,6 +10,7 @@ import Layout from './components/Layout';
 import ProfileList from './components/ProfileList';
 import ProfileDetails from './components/ProfileDetails';
 import AdminDashboard from './components/AdminDashboard';
+import DeveloperProfile from './components/DeveloperProfile';
 import NotFound from './components/NotFound';
 
 const theme = createTheme({
@@ -80,6 +81,7 @@ function App() {
             <Route index element={<ProfileList />} />
             <Route path="profile/:id" element={<ProfileDetails />} />
             <Route path="admin" element={<AdminDashboard />} />
+            <Route path="profiles" element={<DeveloperProfile />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

@@ -39,7 +39,8 @@ function Layout() {
   };
 
   const menuItems = [
-    { text: 'Profiles', icon: <PeopleIcon />, path: '/' },
+    { text: 'Home', icon: <HomeIcon />, path: '/' },
+    { text: 'Developer', icon: <PersonIcon />, path: '/profiles' },
     { text: 'Admin Dashboard', icon: <DashboardIcon />, path: '/admin' },
   ];
 
@@ -93,12 +94,9 @@ function Layout() {
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box
-              component="img"
-              src="/logo.png" // Add your logo image
-              alt="ProfileHub"
-              sx={{ height: 32 }}
-            />
+            <Typography variant="h6" component="div" className="font-poppins" sx={{ color: 'primary.main' }}>
+              ProfileHub
+            </Typography>
           </Box>
 
           {/* Navigation */}
@@ -110,7 +108,7 @@ function Layout() {
               sx={{
                 color: location.pathname === '/' ? 'primary.main' : 'text.secondary',
                 textTransform: 'none',
-                '&:hover': { backgroundColor: 'transparent' },
+                '&:hover': { backgroundColor: 'transparent', color: 'primary.main' },
               }}
             >
               Home
@@ -122,10 +120,10 @@ function Layout() {
               sx={{
                 color: location.pathname === '/profiles' ? 'primary.main' : 'text.secondary',
                 textTransform: 'none',
-                '&:hover': { backgroundColor: 'transparent' },
+                '&:hover': { backgroundColor: 'transparent', color: 'primary.main' },
               }}
             >
-              Profiles
+              Developer
             </Button>
             <Button
               component={Link}
@@ -134,7 +132,7 @@ function Layout() {
               sx={{
                 color: location.pathname === '/admin' ? 'primary.main' : 'text.secondary',
                 textTransform: 'none',
-                '&:hover': { backgroundColor: 'transparent' },
+                '&:hover': { backgroundColor: 'transparent', color: 'primary.main' },
               }}
             >
               Admin
@@ -162,9 +160,8 @@ function Layout() {
         sx={{
           flexGrow: 1,
           p: 3,
-          mt: '64px',
-          bgcolor: 'background.default',
-          minHeight: 'calc(100vh - 64px)',
+          width: '100%',
+          mt: 8,
         }}
       >
         <motion.div
