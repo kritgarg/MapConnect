@@ -8,20 +8,34 @@ import {
   Button,
   InputAdornment,
   Stack,
+  Dialog,
+  DialogContent,
+  IconButton,
 } from '@mui/material';
 import {
   LocationOn,
   Search as SearchIcon,
   FilterList as FilterListIcon,
   ArrowForward as ArrowForwardIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import useProfileStore from '../store/profileStore';
+import MapView from './MapView';
 
 function ProfileList() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProfile, setSelectedProfile] = useState(null);
   const profiles = useProfileStore((state) => state.profiles);
+
+  const handleOpenMap = (profile) => {
+    setSelectedProfile(profile);
+  };
+
+  const handleCloseMap = () => {
+    setSelectedProfile(null);
+  };
 
   const filteredProfiles = profiles.filter(profile => {
     const matchesSearch = profile.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -223,6 +237,7 @@ function ProfileList() {
                     },
                   }}
                   startIcon={<LocationOn />}
+                  onClick={() => handleOpenMap(profile)}
                 >
                   View Location
                 </Button>
@@ -244,6 +259,47 @@ function ProfileList() {
           </motion.div>
         ))}
       </Box>
+
+      {/* Map Modal */}
+      <Dialog
+        open={Boolean(selectedProfile)}
+        onClose={handleCloseMap}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            overflow: 'hidden',
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 0, position: 'relative', height: '70vh' }}>
+          <IconButton
+            onClick={handleCloseMap}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              zIndex: 1,
+              bgcolor: 'white',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              '&:hover': {
+                bgcolor: 'white',
+              }
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {selectedProfile && (
+            <MapView
+              location={selectedProfile.location}
+              coordinates={selectedProfile.coordinates}
+              name={selectedProfile.name}
+              photo={selectedProfile.photo}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
