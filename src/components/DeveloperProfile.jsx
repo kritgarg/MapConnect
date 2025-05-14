@@ -1,29 +1,27 @@
 import { Box, Container, Typography, Paper, Avatar, Chip, IconButton, Link } from '@mui/material';
 import { GitHub, LinkedIn, Email, Language } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import krit from '../assets/krit.png'; 
 
 function DeveloperProfile() {
   const developer = {
     name: "Krit Garg",
     role: "Full Stack Developer",
-    photo: "https://avatars.githubusercontent.com/u/your-github-username", // Replace with your photo URL
+    photo: {krit}, 
     bio: "Passionate full-stack developer with expertise in React, Node.js, and modern web technologies. Created this profile mapping application to demonstrate the integration of React, Material-UI, and Leaflet maps.",
     location: "San Francisco, CA",
     skills: [
       "React",
-      "Node.js",
       "TypeScript",
       "Material-UI",
       "Leaflet",
-      "MongoDB",
-      "AWS",
-      "Docker"
+   
     ],
     links: {
-      github: "https://github.com/yourusername", // Replace with your GitHub URL
-      linkedin: "https://linkedin.com/in/yourusername", // Replace with your LinkedIn URL
-      email: "mailto:your.email@example.com", // Replace with your email
-      website: "https://yourwebsite.com" // Replace with your website
+      github: "https://github.com/kritgarg", 
+      linkedin: "https://linkedin.com/in/krit--garg", 
+      email: "mailto:kritg0160@gmail.com", 
+      
     },
     projects: [
       {
@@ -31,7 +29,7 @@ function DeveloperProfile() {
         description: "A modern React application for managing and viewing user profiles with interactive map integration.",
         technologies: ["React", "Material-UI", "Leaflet", "Zustand"]
       },
-      // Add more projects as needed
+      
     ]
   };
 
